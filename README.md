@@ -78,22 +78,22 @@ Usage: ./dllhijack -mode <proxy|trap> -target <dll> -sc <bin> -out <dll>
 
 ## 6. 操作流程示例
 
-假设我们要劫持一个名为 `libcurl.dll` 的 64 位库，并注入 `beacon.bin`。
+假设我们要劫持一个名为 `libvlc.dll` 的 32 位库，并注入 `beacon.bin`。
 
 ### I.生成 DLL
 
 运行以下命令：
 
 ```bash
-./dllhijack -mode proxy -target libcurl.dll -sc beacon.bin -out libcurl_hook.dll
+./dllhijack -mode proxy -target libvlc.dll -sc beacon.bin -out hack_libvlc.dll
 ```
 
 **工具执行过程：**
 
-1. 解析 `libcurl.dll` 导出表。
+1. 解析 `libvlc.dll` 导出表。
 2. 生成转发定义的 `.def` 文件。
 3. 读取 `beacon.bin` 并生成包含 Shellcode 的 `.c` 文件。
-4. 调用 `x86_64-w64-mingw32-gcc` 进行编译。
+4. 调用 `i686-w64-mingw32-gcc` 进行编译。
 
 ### II. Proxy
 
@@ -102,14 +102,14 @@ Usage: ./dllhijack -mode <proxy|trap> -target <dll> -sc <bin> -out <dll>
 Proxy 模式需要原始 DLL 在场以处理转发请求。
 
 1. 进入目标软件目录。
-2. 将原始的 `libcurl.dll` 重命名为 `_libcurl.dll`。
-3. 将生成的 `libcurl_hook.dll` 重命名为 `libcurl.dll` 并放入该目录。
+2. 将原始的 `libvlc.dll` 重命名为 `_libvlc.dll`。
+3. 将生成的 `hack_libvlc.dll` 重命名为 `libvlc.dll` 并放入该目录。
 4. 可自行修改生成的 dll 名
 
 **目录结构变化：**
 
-- **之前**：`libcurl.dll` (合法)
-- **之后**：`libcurl.dll` (恶意) + `_libcurl.dll` (合法，被转发)
+- **之前**：`libvlc.dll` (合法)
+- **之后**：`libvlc.dll` (恶意) + `_libvlc.dll` (合法，被转发)
 
 ### III. Trap
 
@@ -118,8 +118,8 @@ Proxy 模式需要原始 DLL 在场以处理转发请求。
 Trap 模式不需要原始 DLL。
 
 1. 进入目标软件目录。
-2. 备份原始 `libcurl.dll` (可选)。
-3. 直接用生成的 DLL 覆盖 `libcurl.dll`。
+2. 备份原始 `libvlc.dll` (可选)。
+3. 直接用生成的 DLL 覆盖 `libvlc.dll`。
 
 
 
